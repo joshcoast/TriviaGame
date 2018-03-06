@@ -2,7 +2,8 @@
 
 window.onload = function () {
 	$("#startScreen").click(game.startGame);
-	$("#choiceList").on("click", "li", game.gameChoice);
+	$(".message").on("click", "button", game.startGame);
+	$("#choiceList").on("click", "button", game.gameChoice);
 };
 
 // Question Objects
@@ -26,6 +27,12 @@ var allQuestions = [
 		answers: ["Growing Pains", "Friends", "Seinfeld", "Ugly Betty"],
 		realAnswer: "Friends",
 	},
+	q3 = {
+		image: "seinfeld.jpg",
+		question: "What is the deal with the boring blue couch that appeared on this quirky New York-based sitcom?",
+		answers: ["Seinfeld", "Boy Meets World", "Wings", "Everybody Loves Raymond"],
+		realAnswer: "Seinfeld",
+	},
 ];
 
 var numberOfQuestions = allQuestions.length;
@@ -37,11 +44,11 @@ var gameOver = false;
 //timer
 var clockRunning = false;
 var intervalId;
-var timerSet = 5;
+var timerSet = 25;
 
 // Reusable elements
 var $messageEl = $(".message");
-var $choiceListEl = $("#choiceList ul");
+var $choiceListEl = $("#choiceList");
 var picPath = "./img/questions/";
 
 game = {
@@ -52,32 +59,39 @@ game = {
 		questionNumber = 0;
 		stopwatch.reset;
 		$choiceListEl.empty();
+		$messageEl.addClass("hide").removeClass("show");
 		$("#startScreen").fadeOut();
 		game.buildQuestion(allQuestions[questionNumber]);
 	},
 	buildQuestion: function (questionObject) {
-		$(".tv-show img").attr("src", picPath + questionObject.image);
+		setTimeout(function () {
+			// Let snow show first, then load the real image
+			$(".tv-show img").attr("src", picPath + questionObject.image);
+		}, 400);
+		$(".tv-show img").attr("src", picPath + "snow.jpg");
 		$(".question p").text(questionObject.question);
 		$choiceListEl.empty();
-
+		stopwatch.reset();
+    stopwatch.start();
 		// create list loop
 		for (var i = 0; i < questionObject.answers.length; i++) {
-			var listItem = $("<li>");
+			var listItem = $("<div>");
 			listItem.text(questionObject.answers[i]);
 			listItem.attr("data-answer", questionObject.answers[i]);
+			listItem.wrapInner("<button class='uk-button uk-button-primary uk-display-block'>");
 			$choiceListEl.append(listItem);
 		}
 	},
 	gameChoice: function () {
 		if (!gameOver) {
-			userChoice = $(this).data('answer');
+			userChoice = $(this).parent().data('answer');
 			realAnswer = allQuestions[questionNumber].realAnswer;
 			console.log(userChoice);
 			console.log(realAnswer);
 			questionNumber++;
 			console.log("---- Click Event Triggered ---");
 			if (userChoice === realAnswer) {
-				game.win("<p><strong>Correct! </strong><br><span uk-icon='happy'></span></p>");
+				game.win("<p><strong>Correct!</strong><br><span uk-icon='happy'></span></p>");
 			} else {
 				game.loss('<p><strong>Nope!</strong><br>Correct answer was:<br><strong>' + realAnswer + '</p>');
 			}
@@ -87,14 +101,18 @@ game = {
 		losses++;
 		$messageEl.html(lossMessage);
 		$messageEl.addClass("show").removeClass("hide");
+		$choiceListEl.addClass("stop-clicks");
+		stopwatch.stop();
 
 		setTimeout(function () {
 			$messageEl.addClass("hide").removeClass("show");
+			$choiceListEl.removeClass("stop-clicks");
 			if (questionNumber === numberOfQuestions) {
 				console.log("game over");
 				console.log("Right: " + wins);
 				console.log("Wrong: " + losses);
 				gameOver = true;
+				game.displayRestart();
 			} else {
 				game.buildQuestion(allQuestions[questionNumber]);
 			}
@@ -104,13 +122,18 @@ game = {
 		wins++;
 		$messageEl.html(winMessage);
 		$messageEl.addClass("show").removeClass("hide");
+		$choiceListEl.addClass("stop-clicks");
+		stopwatch.stop();
+
 		setTimeout(function () {
 			$messageEl.addClass("hide").removeClass("show");
+			$choiceListEl.removeClass("stop-clicks");
 			if (questionNumber === numberOfQuestions) {
 				console.log("game over");
 				console.log("Right: " + wins);
 				console.log("Wrong: " + losses);
 				gameOver = true;
+				game.displayRestart();
 			} else {
 				console.log("questionNumber= " + questionNumber);
 				console.log("numberOfQuestions= " + numberOfQuestions);
@@ -118,6 +141,16 @@ game = {
 				game.buildQuestion(allQuestions[questionNumber]);
 			}
 		}, 3000);
+	},
+	displayRestart: function () {
+		$messageEl
+			.addClass("show")
+			.removeClass("hide")
+			.html("You got " + 
+				wins + 
+				" right and " + 
+				losses +  
+				" wrong.<br><button class='uk-button uk-button-default'>Try Again?</button>");
 	}
 }
 
@@ -142,6 +175,7 @@ var stopwatch = {
 		$("#timerNumber").html(stopwatch.time);
 		if (stopwatch.time === 0) {
 			stopwatch.stop();
+			questionNumber++;
 			game.loss("Oops, too slow Joe!");
 		}
 
