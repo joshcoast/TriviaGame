@@ -72,7 +72,7 @@ game = {
 		$(".question p").text(questionObject.question);
 		$choiceListEl.empty();
 		stopwatch.reset();
-    stopwatch.start();
+		stopwatch.start();
 		// create list loop
 		for (var i = 0; i < questionObject.answers.length; i++) {
 			var listItem = $("<div>");
@@ -146,10 +146,10 @@ game = {
 		$messageEl
 			.addClass("show")
 			.removeClass("hide")
-			.html("You got " + 
-				wins + 
-				" right and " + 
-				losses +  
+			.html("You got " +
+				wins +
+				" right and " +
+				losses +
 				" wrong.<br><button class='uk-button uk-button-default'>Try Again?</button>");
 	}
 }
