@@ -33,6 +33,30 @@ var allQuestions = [
 		answers: ["Seinfeld", "Boy Meets World", "Wings", "Everybody Loves Raymond"],
 		realAnswer: "Seinfeld",
 	},
+	q4 = {
+		image: "goldengirls.jpg",
+		question: "Many of conversations were shared about old St. Olaf on this couch.",
+		answers: ["The Wonder Years", "ALF", "Golden Girls", "Who's the Boss"],
+		realAnswer: "Golden Girls",
+	},
+	q5 = {
+		image: "frasier.jpg",
+		question: "The odd couple living in this sitcom are mirrored by their choice in couches.",
+		answers: ["The Fresh Prince", "Fraiser", "Friends", "Mad About You"],
+		realAnswer: "Fraiser",
+	},
+	q6 = {
+		image: "big-bang-theory.jpg",
+		question: "Careful where you sit, one seat is already spoken for in this smart guys apartment.",
+		answers: ["The Big Bang Theory", "That 70's Show", "Two and a Half Men", "Freaks and Geeks"],
+		realAnswer: "The Big Bang Theory",
+	},
+	q7 = {
+		image: "will-and-grace.jpg",
+		question: "The navy loveseat in this series's well-furnished pad was fit for its interior designer owner.",
+		answers: ["Designing Women", "King of Queens", "Will & Grace", "Reba"],
+		realAnswer: "Will & Grace",
+	},
 ];
 
 var numberOfQuestions = allQuestions.length;
